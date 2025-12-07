@@ -54,9 +54,3 @@ cc_binary {
         "libhardware",
     ],
 }
-
-// Legacy service name, use android.hardware.audio.service instead
-phony {
-    name: "android.hardware.audio@2.0-service.mediatek",
-    required: ["android.hardware.audio.service.mediatek"],
-}
