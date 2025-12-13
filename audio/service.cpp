@@ -28,6 +28,12 @@
 #include <hidl/LegacySupport.h>
 #include <hwbinder/ProcessState.h>
 
+#ifdef USES_AIDL_SOUNDTRIGGER
+#include "SoundTriggerHw.h"
+#include <android/binder_manager.h>
+#include <android-base/logging.h>
+#endif
+
 using namespace android::hardware;
 using android::OK;
 
@@ -113,6 +119,7 @@ int main(int /* argc */, char* /* argv */ []) {
     };
 
     const std::vector<InterfacesList> optionalInterfaces = {
+#ifndef USES_AIDL_SOUNDTRIGGER
         {
             "Soundtrigger API",
             "android.hardware.soundtrigger@2.3::ISoundTriggerHw",
@@ -120,6 +127,7 @@ int main(int /* argc */, char* /* argv */ []) {
             "android.hardware.soundtrigger@2.1::ISoundTriggerHw",
             "android.hardware.soundtrigger@2.0::ISoundTriggerHw",
         },
+#endif
         {
             "Bluetooth Audio API",
             "android.hardware.bluetooth.audio@2.2::IBluetoothAudioProvidersFactory",
@@ -164,6 +172,17 @@ int main(int /* argc */, char* /* argv */ []) {
             ALOGW("%s() from %s failed", interfaceLoaderFuncName.c_str(), libraryName.c_str());
         }
     }
+
+#ifdef USES_AIDL_SOUNDTRIGGER
+    using aidl::android::hardware::soundtrigger3::SoundTriggerHw;
+
+    std::shared_ptr<SoundTriggerHw> soundTriggerDefault = ::ndk::SharedRefBase::make<SoundTriggerHw>();
+    const std::string soundTriggerDefaultName =
+            std::string() + SoundTriggerHw::descriptor + "/default";
+    binder_status_t status = AServiceManager_addService(soundTriggerDefault->asBinder().get(),
+                                                        soundTriggerDefaultName.c_str());
+    CHECK_EQ(STATUS_OK, status);
+#endif
 
     joinRpcThreadpool();
 }

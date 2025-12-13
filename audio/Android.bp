@@ -3,15 +3,23 @@ soong_config_module_type {
     module_type: "cc_defaults",
     config_namespace: "android_hardware_mediatek_audio",
     bool_variables: [
+        "uses_aidl_soundtrigger",
         "run_32bit",
     ],
-    properties: ["compile_multilib"],
+    properties: ["compile_multilib", "shared_libs", "cflags", "defaults"],
 }
 
 android_hardware_mediatek_audio_config_default {
     name: "android_hardware_mediatek_audio_config_defaults",
 
     soong_config_variables: {
+        uses_aidl_soundtrigger: {
+            cflags: ["-DUSES_AIDL_SOUNDTRIGGER"],
+            defaults: ["latest_android_hardware_soundtrigger3_ndk_shared"],
+            shared_libs: [
+                "android.hardware.soundtrigger3-impl",
+            ],
+        },
         run_32bit: {
             conditions_default: {
                 compile_multilib: "64",
@@ -49,4 +57,10 @@ cc_binary {
         "libutils",
         "libhardware",
     ],
+}
+
+cc_library_shared {
+    name: "android.hardware.soundtrigger3-impl",
+    relative_install_path: "hw",
+    soc_specific: true,
 }
