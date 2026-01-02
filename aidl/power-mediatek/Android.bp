@@ -40,7 +40,10 @@ mediatek_power_defaults {
 
 cc_library_shared {
     name: "android.hardware.power-service-mediatek",
-    defaults: ["mediatek_power_defaults"],
+    defaults: [
+        "mediatek_power_defaults",
+        "android.hardware.power-ndk_shared"
+    ],
     vendor: true,
     vintf_fragments: ["power-mtk.xml"],
     srcs: ["Power.cpp"],
@@ -49,6 +52,5 @@ cc_library_shared {
     shared_libs: [
         "libbase",
         "libbinder_ndk",
-        "android.hardware.power-V2-ndk",
     ],
 }
