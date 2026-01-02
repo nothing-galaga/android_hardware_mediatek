@@ -37,6 +37,7 @@ cc_library_shared {
     compile_multilib: "64",
     vintf_fragments: ["power-mtk.xml"],
     srcs: ["Power.cpp"],
+    soc_specific: true,
 
     shared_libs: [
         "libbase",
