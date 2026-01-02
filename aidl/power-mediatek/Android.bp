@@ -10,10 +10,12 @@ soong_config_module_type {
     value_variables: [
         "double_tap_to_wake_node",
         "powerhal_ext",
+        "run_32bit",
     ],
     properties: [
         "cflags",
         "whole_static_libs",
+        "compile_multilib",
     ],
 }
 
@@ -27,6 +29,12 @@ mediatek_power_defaults {
             cflags: ["-DMODE_EXT"],
             whole_static_libs: ["%s"],
         },
+        run_32bit: {
+            conditions_default: {
+                compile_multilib: "64",
+            },
+            compile_multilib: "32",
+        },
     },
 }
 
@@ -34,7 +42,6 @@ cc_library_shared {
     name: "android.hardware.power-service-mediatek",
     defaults: ["mediatek_power_defaults"],
     vendor: true,
-    compile_multilib: "64",
     vintf_fragments: ["power-mtk.xml"],
     srcs: ["Power.cpp"],
     soc_specific: true,
